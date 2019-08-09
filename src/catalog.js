@@ -52,7 +52,7 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     let files = ctx.request.files.files;
     try {
         fs.mkdirSync(`./src/static/img/car/${alias}`);
-    } catch(err){}
+    } catch(err){ console.log(err); }
 
     if(files) {
         _.each(files, file=>{
