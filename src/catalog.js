@@ -50,9 +50,16 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     let body = ctx.request.body;
     let photos = (body.photos||'').length>0?body.photos.split(','):[];
     let files = ctx.request.files.files;
+
+    if(!_.isArray(files) && files && files.type) {
+        files = [files];
+    }
+
     try {
+        fs.statSync(`./src/static/img/car/${alias}`);
+    } catch(e) {
         fs.mkdirSync(`./src/static/img/car/${alias}`);
-    } catch(err){ }
+    }
 
     if(files) {
         _.each(files, file=>{
