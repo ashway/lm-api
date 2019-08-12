@@ -50,6 +50,8 @@ router.get('/car/status/:alias/:status', async function (ctx, next) {
 });
 
 router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
+    console.log('car/add');
+
     let alias = ctx.params.alias || uuid();
     let body = ctx.request.body;
     let photos = (body.photos||'').length>0?body.photos.split(','):[];
@@ -60,8 +62,6 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     if(!_.isArray(files) && files && files.type) {
         files = [files];
     }
-
-    console.log(alias);
 
     try {
         fs.statSync(`../lm-api-data/car/${alias}`);
