@@ -62,7 +62,12 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     try {
         fs.statSync(`../lm-api-data/car/${alias}`);
     } catch(e) {
-        fs.mkdirSync(`../lm-api-data/car/${alias}`);
+        console.log(err);
+        try {
+            fs.mkdirSync(`../lm-api-data/car/${alias}`);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     if(files) {
