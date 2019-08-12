@@ -36,7 +36,7 @@ router.post(['/model/add', '/model/update/:alias'], async function (ctx, next) {
 
     if(ctx.params.alias) {
         data.$aliasUpdate = ctx.params.alias;
-        await db.all("UPDATE carmodel SET alias=$alias, class=$class, mark=$mark, name=$name, price=$price, outcity_price=$outcity_price, mintime=$mintime, $is_group=is_group WHERE alias=$aliasUpdate",  data);
+        await db.all("UPDATE carmodel SET alias=$alias, class=$class, mark=$mark, name=$name, price=$price, outcity_price=$outcity_price, mintime=$mintime, is_group=$is_group WHERE alias=$aliasUpdate",  data);
     } else {
         await db.all("INSERT INTO carmodel (alias, class, mark, name, price, outcity_price, mintime, is_group) VALUES ($alias, $class, $mark, $name, $price, $outcity_price, $mintime, $is_group)", data);
     }
