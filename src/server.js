@@ -7,7 +7,7 @@ const koaBody = require('koa-body');
 const app = new Koa();
 
 app.use(koaBody({ multipart: true }));
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: false }));
 app.use(router.allowedMethods());
 
 app.use(require('./mark'));
