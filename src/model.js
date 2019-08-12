@@ -13,10 +13,11 @@ router.get('/model/list', async function (ctx, next) {
 
 router.get('/model/list/random', async function (ctx, next) {
     const db = await sqlite.open('./src/db.sqlite');
-    let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias, carmark.name, carmodel.name, carmodel.price, metamodel.is_group FROM carcatalog \n" +
+    let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias, carmark.name markName, carmodel.name modelName, carmodel.price, metamodel.is_group FROM carcatalog \n" +
         "INNER JOIN carmodel ON carmodel.alias=carcatalog.model \n" +
         "LEFT JOIN carmodel as metamodel ON metamodel.alias=carmodel.class\n" +
         "INNER JOIN carmark ON carmark.alias = carmodel.mark\n" +
+        "GROUP BY carmodel.alias\n" +
         "ORDER BY RANDOM() LIMIT 10");
     ctx.body = rows;
     ctx.status = 200;
