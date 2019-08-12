@@ -10,7 +10,7 @@ router.get('/car/list/:model', async function (ctx, next) {
     const db = await sqlite.open('./src/db.sqlite');
     let rows = await db.all("SELECT * FROM carcatalog WHERE model=$model ORDER BY active DESC, alias ASC", { $model: ctx.params.model });
     if(rows && _.isArray(rows) && rows.length==0) {
-        rows = await db.all("SELECT carmodel.*, carcatalog.* from carcatalog INNER JOIN carmodel ON carmodel.alias=carcatalog.model WHERE carmodel.class=$class ORDER BY carcatalog.active DESC, carcatalog.alias ASC", { $class: ctx.params.model });
+        rows = await db.all("SELECT carcatalog.*, carmodel.price, carmodel.outcity_price, carmodel.mintime from carcatalog INNER JOIN carmodel ON carmodel.alias=carcatalog.model WHERE carmodel.class=$class ORDER BY carcatalog.active DESC, carcatalog.alias ASC", { $class: ctx.params.model });
     }
     _.each(rows, r=>r.photos = ((r.photos||'').length>0)?r.photos.split(','):[]);
     ctx.body = rows;
