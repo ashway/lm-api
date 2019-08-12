@@ -55,6 +55,8 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     let photos = (body.photos||'').length>0?body.photos.split(','):[];
     let files = ctx.request.files.files;
 
+    console.log(files);
+
     if(!_.isArray(files) && files && files.type) {
         files = [files];
     }
