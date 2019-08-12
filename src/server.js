@@ -9,7 +9,7 @@ const app = new Koa();
 
 app.use(serve(`${__dirname}/static`));
 app.use(koaBody({ multipart: true }));
-app.use(cors({origin: '*'} ));
+app.use(cors({ origin: false } ));
 app.use(router.allowedMethods());
 
 app.use(require('./mark'));
