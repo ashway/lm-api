@@ -4,10 +4,11 @@ let _ = require('lodash');
 const fs = require('fs');
 const uuid = require('uuid/v1');
 const pump = require('pump');
+const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
 router.get('/car/list/:model', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT * FROM carcatalog WHERE model=$model ORDER BY active DESC, alias ASC", { $model: ctx.params.model });
     if(rows && _.isArray(rows) && rows.length==0) {
         rows = await db.all("SELECT carcatalog.*, carmodel.price, carmodel.outcity_price, carmodel.mintime, carmodel.mark from carcatalog INNER JOIN carmodel ON carmodel.alias=carcatalog.model WHERE carmodel.class=$class ORDER BY carcatalog.active DESC, carcatalog.alias ASC", { $class: ctx.params.model });
@@ -20,7 +21,7 @@ router.get('/car/list/:model', async function (ctx, next) {
 });
 
 router.get('/car/get/:alias', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     let row = await db.get("SELECT * FROM carcatalog WHERE alias=$alias", { $alias: ctx.params.alias });
     if(row) {
         row.photos = ((row.photos||'').length>0)?row.photos.split(','):[];
@@ -32,7 +33,7 @@ router.get('/car/get/:alias', async function (ctx, next) {
 });
 
 router.get('/car/delete/:alias', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     await db.run("DELETE FROM carcatalog WHERE alias=$alias", { $alias: ctx.params.alias });
     ctx.status = 200;
     db.close();
@@ -41,7 +42,7 @@ router.get('/car/delete/:alias', async function (ctx, next) {
 
 
 router.get('/car/status/:alias/:status', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     await db.run("UPDATE carcatalog SET active=$status WHERE alias=$alias", { $alias: ctx.params.alias, $status: ctx.params.status });
     ctx.status = 200;
     db.close();
@@ -88,7 +89,7 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
         $photos: photos.join(','),
         $cover: body.cover || photos[0]
     };
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     await db.run('REPLACE INTO carcatalog (alias, model, driver, phone, price, outcity_price, mintime, active, photos, cover) VALUES($alias, $model, $driver, $phone, $price, $outcity_price, $mintime, $active, $photos, $cover)', data);
     db.close();
     ctx.body = alias;

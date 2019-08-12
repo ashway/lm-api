@@ -1,9 +1,10 @@
 const Router = require('koa-router');
 let sqlite = require('sqlite');
+const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
 router.get('/model/list', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT carmodel.*, count(carcatalog.rowid) as carCount FROM carmodel LEFT JOIN carcatalog ON carcatalog.model=carmodel.alias GROUP BY carmodel.alias ORDER BY carmodel.is_group, carmodel.mark, carmodel.name");
     ctx.body = rows;
     ctx.status = 200;
@@ -12,7 +13,7 @@ router.get('/model/list', async function (ctx, next) {
 });
 
 router.get('/model/list/random', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias modelAlias, carmark.name markName, carmodel.name modelName, carmodel.price, metamodel.is_group FROM carcatalog \n" +
         "INNER JOIN carmodel ON carmodel.alias=carcatalog.model \n" +
         "LEFT JOIN carmodel as metamodel ON metamodel.alias=carmodel.class\n" +
@@ -26,7 +27,7 @@ router.get('/model/list/random', async function (ctx, next) {
 });
 
 router.get('/model/delete/:alias', async function (ctx, next) {
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
     await db.all("DELETE FROM carmodel WHERE alias=$alias", {  $alias: ctx.params.alias });
     ctx.status = 200;
     db.close();
@@ -35,7 +36,7 @@ router.get('/model/delete/:alias', async function (ctx, next) {
 
 router.post(['/model/add', '/model/update/:alias'], async function (ctx, next) {
     let body = ctx.request.body;
-    const db = await sqlite.open('./src/db.sqlite');
+    const db = await sqlite.open(dbPath);
 
     let data = {
         $alias: body.alias.toLowerCase().replace(/\s+/gi, ''),
