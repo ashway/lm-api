@@ -11,6 +11,19 @@ router.get('/model/list', async function (ctx, next) {
     await next();
 });
 
+router.get('/model/list/random', async function (ctx, next) {
+    const db = await sqlite.open('./src/db.sqlite');
+    let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias, carmark.name, carmodel.name, carmodel.price, metamodel.is_group FROM carcatalog \n" +
+        "INNER JOIN carmodel ON carmodel.alias=carcatalog.model \n" +
+        "LEFT JOIN carmodel as metamodel ON metamodel.alias=carmodel.class\n" +
+        "INNER JOIN carmark ON carmark.alias = carmodel.mark\n" +
+        "ORDER BY RANDOM() LIMIT 10");
+    ctx.body = rows;
+    ctx.status = 200;
+    db.close();
+    await next();
+});
+
 router.get('/model/delete/:alias', async function (ctx, next) {
     const db = await sqlite.open('./src/db.sqlite');
     await db.all("DELETE FROM carmodel WHERE alias=$alias", {  $alias: ctx.params.alias });
