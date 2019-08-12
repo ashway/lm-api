@@ -60,9 +60,9 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
     }
 
     try {
-        fs.statSync(`./src/static/img/car/${alias}`);
+        fs.statSync(`../lm-api-data/car/${alias}`);
     } catch(e) {
-        fs.mkdirSync(`./src/static/img/car/${alias}`);
+        fs.mkdirSync(`../lm-api-data/car/${alias}`);
     }
 
     if(files) {
@@ -72,7 +72,7 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
             if(file.name==body.cover) {
                 body.cover = filename;
             }
-            pump(fs.createReadStream(file.path), fs.createWriteStream(`./src/static/img/car/${alias}/${filename}.jpg`));
+            pump(fs.createReadStream(file.path), fs.createWriteStream(`../lm-api-data/car/${alias}/${filename}.jpg`));
         });
         }
 
