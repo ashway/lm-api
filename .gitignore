@@ -2,5 +2,10 @@
 /node_modules
 npm-debug.log
 package-lock.json
+<<<<<<< HEAD
 /src/db.sqlite
 /src/static/img/car
+=======
+/src.db.sqlite
+/src/static/img/car
+>>>>>>> b41c8b3753ff64afddd0d62796df3cbfa7f5f3ca
