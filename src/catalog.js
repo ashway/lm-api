@@ -59,15 +59,12 @@ router.post(['/car/add', '/car/update/:alias'], async function (ctx, next) {
         files = [files];
     }
 
+    console.log(alias);
+
     try {
         fs.statSync(`../lm-api-data/car/${alias}`);
     } catch(e) {
-        console.log(err);
-        try {
-            fs.mkdirSync(`../lm-api-data/car/${alias}`);
-        } catch (e) {
-            console.log(e);
-        }
+        fs.mkdirSync(`../lm-api-data/car/${alias}`);
     }
 
     if(files) {
