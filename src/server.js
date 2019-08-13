@@ -13,7 +13,8 @@ app.use(router.allowedMethods());
 app.use(require('./mark'));
 app.use(require('./model'));
 app.use(require('./catalog'));
- 
+app.use(require('./services'));
+
 app.listen(3033);
  
 console.log('LM-API started and listening on port 3033.');
