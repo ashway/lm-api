@@ -12,4 +12,14 @@ router.get('/services/list', async function (ctx, next) {
     await next();
 });
 
+router.post('/services/save/:alias', async function (ctx, next) {
+    const db = await sqlite.open(dbPath);
+    await db.run("UPDATE services SET models=$models WHERE alias=$alias", {  $alias: ctx.params.alias, $models: body.models.join(',') });
+    ctx.status = 200;
+    db.close();
+    await next();
+});
+
+
+
 module.exports = router.routes();
