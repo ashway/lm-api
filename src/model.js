@@ -12,7 +12,7 @@ router.get('/model/list', async function (ctx, next) {
     await next();
 });
 
-router.get('/model/price', async function (ctx, next) {
+router.get('/class/price', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT class, MIN(price) price FROM carmodel GROUP BY class");
     ctx.body = rows;
