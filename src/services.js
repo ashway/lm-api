@@ -12,12 +12,14 @@ router.get('/services/list', async function (ctx, next) {
     await next();
 });
 
-
-//SELECT * FROM services s LEFT JOIN carcatalog cc ON cc.model IN (s.models||',') WHERE s.alias='premium'
-
 router.get('/services/list/:alias', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
-    let rows = await db.all("SELECT * FROM services");
+    let rows = await db.all(`SELECT cmk.name markName, cm.name modelName, cc.alias carAlias, cc.photos carPhotos, cc.cover carCover, cm.price carPrice  FROM services s 
+        INNER JOIN carcatalog cc ON cc.model=s.model
+        INNER JOIN carmodel cm ON cm.alias=cc.model
+        INNER JOIN carmark cmk ON cmk.alias=cm.mark
+        WHERE s.alias='${ctx.params.alias}'
+        GROUP BY cc.model`);
     ctx.body = rows;
     ctx.status = 200;
     db.close();
