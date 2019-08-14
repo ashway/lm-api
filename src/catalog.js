@@ -20,6 +20,19 @@ router.get('/car/list/:model', async function (ctx, next) {
     await next();
 });
 
+router.get('/car/list/:model/active', async function (ctx, next) {
+    const db = await sqlite.open(dbPath);
+    let rows = await db.all("SELECT * FROM carcatalog WHERE model=$model AND active=1 ORDER BY active DESC, alias ASC", { $model: ctx.params.model });
+    if(rows && _.isArray(rows) && rows.length==0) {
+        rows = await db.all(`SELECT carcatalog.*, carmodel.price, carmodel.outcity_price, carmodel.mintime, carmodel.mark from carcatalog INNER JOIN carmodel ON carmodel.alias=carcatalog.model WHERE carmodel.class=$class AND carcatalog.active=1 ORDER BY carcatalog.active DESC, carcatalog.alias ASC`, { $class: ctx.params.model });
+    }
+    _.each(rows, r=>r.photos = ((r.photos||'').length>0)?r.photos.split(','):[]);
+    ctx.body = rows;
+    ctx.status = 200;
+    db.close();
+    await next();
+});
+
 router.get('/car/get/:alias', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
     let row = await db.get("SELECT * FROM carcatalog WHERE alias=$alias", { $alias: ctx.params.alias });
