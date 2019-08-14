@@ -24,15 +24,21 @@ router.get('/services/list/:alias', async function (ctx, next) {
     await next();
 });
 
-router.post('/services/save/:alias', async function (ctx, next) {
-    let body = ctx.request.body;
+router.get('/services/add/:alias/:model', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
-    await db.run("UPDATE services SET models=$models WHERE alias=$alias", {  $alias: ctx.params.alias, $models: body.models.join(',') });
+    await db.run("INSERT INTO services (alias, model) VALUES($alias, $model)", {  $alias: ctx.params.alias, $model: ctx.params.model });
     ctx.status = 200;
     db.close();
     await next();
 });
 
+router.get('/services/delete/:alias/:model', async function (ctx, next) {
+    const db = await sqlite.open(dbPath);
+    await db.run("DELETE FROM INTO WHERE alias=$alias AND $model=$model", {  $alias: ctx.params.alias, $model: ctx.params.model });
+    ctx.status = 200;
+    db.close();
+    await next();
+});
 
 
 module.exports = router.routes();
