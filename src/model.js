@@ -12,6 +12,15 @@ router.get('/model/list', async function (ctx, next) {
     await next();
 });
 
+router.get('/model/price', async function (ctx, next) {
+    const db = await sqlite.open(dbPath);
+    let rows = await db.all("SELECT class, MIN(price) price FROM carmodel GROUP BY class");
+    ctx.body = rows;
+    ctx.status = 200;
+    db.close();
+    await next();
+});
+
 router.get('/model/list/random', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias modelAlias, carmark.name markName, carmodel.name modelName, carmodel.price, metamodel.is_group FROM carcatalog \n" +
