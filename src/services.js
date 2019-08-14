@@ -14,7 +14,7 @@ router.get('/services/list', async function (ctx, next) {
 
 router.get('/services/list/:alias', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
-    let rows = await db.all(`SELECT cmk.name markName, cm.name modelName, cc.alias carAlias, cc.photos carPhotos, cc.cover carCover, cm.price carPrice  FROM services s 
+    let rows = await db.all(`SELECT cmk.name markName, cm.name modelName, cc.alias alias, cc.photos photos, cc.cover cover, cm.price price  FROM services s 
         INNER JOIN carcatalog cc ON cc.model=s.model
         INNER JOIN carmodel cm ON cm.alias=cc.model
         INNER JOIN carmark cmk ON cmk.alias=cm.mark
