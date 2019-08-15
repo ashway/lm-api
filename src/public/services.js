@@ -3,7 +3,7 @@ let sqlite = require('sqlite');
 const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
-router.get('/services/list', async function (ctx, next) {
+router.get('/public/services/list', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT alias alias, group_concat(model, ',') models FROM services GROUP BY alias");
     ctx.body = rows;
@@ -11,7 +11,7 @@ router.get('/services/list', async function (ctx, next) {
     db.close();
 });
 
-router.get('/services/list/:alias', async function (ctx, next) {
+router.get('/public/services/list/:alias', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all(`SELECT cmk.name markName, cm.name modelName, cm.class class, cm.alias modelAlias, cc.alias alias, cc.photos photos, cc.cover cover, cm.price price  FROM services s 
         INNER JOIN carcatalog cc ON cc.model=s.model
@@ -23,20 +23,5 @@ router.get('/services/list/:alias', async function (ctx, next) {
     ctx.status = 200;
     db.close();
 });
-
-router.get('/services/add/:alias/:model', async function (ctx, next) {
-    const db = await sqlite.open(dbPath);
-    await db.run("INSERT INTO services (alias, model) VALUES($alias, $model)", {  $alias: ctx.params.alias, $model: ctx.params.model });
-    ctx.status = 200;
-    db.close();
-});
-
-router.get('/services/delete/:alias/:model', async function (ctx, next) {
-    const db = await sqlite.open(dbPath);
-    await db.run("DELETE FROM services WHERE alias=$alias AND $model=$model", {  $alias: ctx.params.alias, $model: ctx.params.model });
-    ctx.status = 200;
-    db.close();
-});
-
 
 module.exports = router.routes();

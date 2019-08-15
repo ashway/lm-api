@@ -9,7 +9,6 @@ router.get('/model/list', async function (ctx, next) {
     ctx.body = rows;
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.get('/class/price', async function (ctx, next) {
@@ -18,7 +17,6 @@ router.get('/class/price', async function (ctx, next) {
     ctx.body = rows;
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.get('/model/list/random', async function (ctx, next) {
@@ -32,7 +30,6 @@ router.get('/model/list/random', async function (ctx, next) {
     ctx.body = rows;
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.get('/model/delete/:alias', async function (ctx, next) {
@@ -40,7 +37,6 @@ router.get('/model/delete/:alias', async function (ctx, next) {
     await db.all("DELETE FROM carmodel WHERE alias=$alias", {  $alias: ctx.params.alias });
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.post(['/model/add', '/model/update/:alias'], async function (ctx, next) {
@@ -67,7 +63,6 @@ router.post(['/model/add', '/model/update/:alias'], async function (ctx, next) {
 
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 module.exports = router.routes();

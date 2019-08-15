@@ -9,7 +9,6 @@ router.get('/mark/list', async function (ctx, next) {
     ctx.body = rows;
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.get('/mark/delete/:alias', async function (ctx, next) {
@@ -17,7 +16,6 @@ router.get('/mark/delete/:alias', async function (ctx, next) {
     await db.run("DELETE FROM carmark WHERE alias=$alias", {  $alias: ctx.params.alias });
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.post('/mark/add', async function (ctx, next) {
@@ -27,7 +25,6 @@ router.post('/mark/add', async function (ctx, next) {
     await db.run("INSERT INTO carmark (alias, name) VALUES ($alias, $name)", { $alias: body.alias, $name: body.name });
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 module.exports = router.routes();
