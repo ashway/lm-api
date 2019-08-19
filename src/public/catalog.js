@@ -21,7 +21,7 @@ router.get('/public/car/list/:model', async function (ctx, next) {
 
 router.get('/public/car/list/:model/active', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
-    let rows = await db.all("SELECT alias, model,price, outcity_price, mintime, photos, cover FROM carcatalog WHERE model='w222' AND active=1 ORDER BY active DESC, alias ASC", { $model: ctx.params.model });
+    let rows = await db.all("SELECT alias, model, price, outcity_price, mintime, photos, cover FROM carcatalog WHERE model=$model AND active=1 ORDER BY active DESC, alias ASC", { $model: ctx.params.model });
     if(rows && _.isArray(rows) && rows.length==0) {
         rows = await db.all(`SELECT 
             cc.alias, 
@@ -37,7 +37,7 @@ router.get('/public/car/list/:model/active', async function (ctx, next) {
         FROM carcatalog cc 
         INNER JOIN carmodel cm ON cm.alias=cc.model 
         INNER JOIN carmark cmk ON cmk.alias=cm.mark
-        WHERE cm.class='premium' AND cc.active=1 
+        WHERE cm.class=$class AND cc.active=1 
         ORDER BY cc.active DESC, cc.alias ASC`, { $class: ctx.params.model });
     }
     _.each(rows, r=>r.photos = ((r.photos||'').length>0)?r.photos.split(','):[]);
