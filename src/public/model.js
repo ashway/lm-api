@@ -18,7 +18,7 @@ router.get('/public/model/list', async function (ctx) {
             count(cc.rowid) as carCount 
         FROM carmodel cm 
         LEFT JOIN carcatalog cc ON cc.model=cm.alias 
-        INNER JOIN carmark cmk ON cmk.alias=cm.mark
+        LEFT JOIN carmark cmk ON cmk.alias=cm.mark
         GROUP BY cm.alias 
         ORDER BY cm.is_group, cm.mark, cm.name`);
     ctx.body = rows;
