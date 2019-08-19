@@ -4,7 +4,7 @@ const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
 
-router.get('/public/model/list', async function (ctx, next) {
+router.get('/public/model/list', async function (ctx) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all(`SELECT 
             cm.alias,
@@ -24,7 +24,6 @@ router.get('/public/model/list', async function (ctx, next) {
     ctx.body = rows;
     ctx.status = 200;
     db.close();
-    await next();
 });
 
 router.get('/public/model/${alias}', async function (ctx) {
