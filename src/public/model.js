@@ -3,6 +3,30 @@ let sqlite = require('sqlite');
 const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
+
+router.get('/public/model/list', async function (ctx, next) {
+    const db = await sqlite.open(dbPath);
+    let rows = await db.all(`SELECT 
+            cm.alias,
+            cm.class,
+            cm.name modelName,
+            cmk.name markName,
+            cm.price,
+            cm.outcity_price,
+            cm.mintime,
+            cm.is_group, 
+            count(cc.rowid) as carCount 
+        FROM carmodel cm 
+        LEFT JOIN carcatalog cc ON cc.model=cm.alias 
+        INNER JOIN carmark cmk ON cmk.alias=cm.mark
+        GROUP BY cm.alias 
+        ORDER BY cm.is_group, cm.mark, cm.name`);
+    ctx.body = rows;
+    ctx.status = 200;
+    db.close();
+    await next();
+});
+
 router.get('/public/model/${alias}', async function (ctx) {
     const db = await sqlite.open(dbPath);
         let rows = await db.get(`SELECT 
