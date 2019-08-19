@@ -28,16 +28,17 @@ router.get('/public/car/list/:model/active', async function (ctx, next) {
             cc.photos, 
             cc.cover, 
             cc.model, 
-            cm.name modelName, 
-            cm.price, 
-            cm.outcity_price, 
-            cm.mintime, 
+            cm.name modelName,
+            coalesce(NULLIF(cc.price,''), NULLIF(cm.price,'')) price, 
+            coalesce(NULLIF(cc.outcity_price,''), NULLIF(cm.outcity_price,'')) outcity_price, 
+            coalesce(NULLIF(cc.mintime,''), NULLIF(cm.mintime,'')) mintime, 
+            cm.seats seats, 
             cm.mark, 
             cmk.name markName 
         FROM carcatalog cc 
         INNER JOIN carmodel cm ON cm.alias=cc.model 
         INNER JOIN carmark cmk ON cmk.alias=cm.mark
-        WHERE cm.class=$class AND cc.active=1 
+        WHERE cm.class='bus' AND cc.active=1 
         ORDER BY cc.active DESC, cc.alias ASC`, { $class: ctx.params.model });
     }
     _.each(rows, r=>r.photos = ((r.photos||'').length>0)?r.photos.split(','):[]);
