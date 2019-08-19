@@ -3,15 +3,26 @@ let sqlite = require('sqlite');
 const dbPath = '../lm-api-data/db.sqlite';
 
 let router = new Router();
-router.get('/public/model/list', async function (ctx, next) {
+router.get('/public/model/${alias}', async function (ctx) {
     const db = await sqlite.open(dbPath);
-    let rows = await db.all("SELECT carmodel.*, count(carcatalog.rowid) as carCount FROM carmodel LEFT JOIN carcatalog ON carcatalog.model=carmodel.alias GROUP BY carmodel.alias ORDER BY carmodel.is_group, carmodel.mark, carmodel.name");
+        let rows = await db.get(`SELECT 
+                cm.alias, 
+                cm.class, 
+                cm.name modelName, 
+                cmk.name markName, 
+                cm.price, 
+                cm.outcity_price, 
+                cm.mintime, 
+            cm.is_group 
+            FROM carmodel cm 
+            INNER JOIN carmark cmk ON cmk.alias=cm.mark 
+            WHERE cm.alias=$alias`, {  $alias: ctx.params.alias });
     ctx.body = rows;
     ctx.status = 200;
     db.close();
 });
 
-router.get('/public/class/price', async function (ctx, next) {
+router.get('/public/class/price', async function (ctx) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT class, MIN(price) price FROM carmodel GROUP BY class");
     ctx.body = rows;
@@ -19,7 +30,7 @@ router.get('/public/class/price', async function (ctx, next) {
     db.close();
 });
 
-router.get('/public/model/list/random', async function (ctx, next) {
+router.get('/public/model/list/random', async function (ctx) {
     const db = await sqlite.open(dbPath);
     let rows = await db.all("SELECT carcatalog.alias, carcatalog.cover, carmodel.class, carmodel.alias modelAlias, carmark.name markName, carmodel.name modelName, carmodel.price, metamodel.is_group FROM carcatalog \n" +
         "INNER JOIN carmodel ON carmodel.alias=carcatalog.model \n" +
