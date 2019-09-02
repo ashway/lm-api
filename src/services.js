@@ -33,7 +33,7 @@ router.get('/services/add/:alias/:model', async function (ctx, next) {
 
 router.get('/services/delete/:alias/:model', async function (ctx, next) {
     const db = await sqlite.open(dbPath);
-    await db.run("DELETE FROM services WHERE alias=$alias AND $model=$model", {  $alias: ctx.params.alias, $model: ctx.params.model });
+    await db.run("DELETE FROM services WHERE alias=$alias AND model=$model", {  $alias: ctx.params.alias, $model: ctx.params.model });
     ctx.status = 200;
     db.close();
 });
